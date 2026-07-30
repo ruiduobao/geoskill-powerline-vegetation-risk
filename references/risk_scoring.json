@@ -1,0 +1,111 @@
+{
+  "description": "Powerline vegetation risk scoring schema. Scores range 0-10 per factor, total 0-50 mapped to risk levels.",
+  "version": "1.0.0",
+  "risk_levels": {
+    "critical": {
+      "code": 4,
+      "min_total": 38,
+      "color": "#d73027",
+      "description": "Critical risk: immediate inspection required",
+      "action": "Dispatch crew within 24 hours"
+    },
+    "high": {
+      "code": 3,
+      "min_total": 28,
+      "color": "#fc8d59",
+      "description": "High risk: priority inspection within 1 week",
+      "action": "Schedule inspection within 7 days"
+    },
+    "medium": {
+      "code": 2,
+      "min_total": 18,
+      "color": "#fee08b",
+      "description": "Medium risk: planned inspection within 1 month",
+      "action": "Include in next scheduled patrol"
+    },
+    "low": {
+      "code": 1,
+      "min_total": 8,
+      "color": "#91cf60",
+      "description": "Low risk: monitor in routine patrol",
+      "action": "Note for next routine inspection"
+    },
+    "minimal": {
+      "code": 0,
+      "min_total": 0,
+      "color": "#1a9850",
+      "description": "Minimal risk: no action needed",
+      "action": "No action"
+    }
+  },
+  "factors": {
+    "height_proximity": {
+      "weight": 1.0,
+      "description": "Vegetation height relative to conductor height",
+      "scoring": [
+        {"condition": "vegetation_height >= conductor_height - 1.0", "score": 10},
+        {"condition": "vegetation_height >= conductor_height - 3.0", "score": 7},
+        {"condition": "vegetation_height >= conductor_height - 5.0", "score": 4},
+        {"condition": "vegetation_height < conductor_height - 5.0", "score": 1}
+      ]
+    },
+    "growth_rate": {
+      "weight": 1.0,
+      "description": "Annual vegetation growth rate (m/year)",
+      "scoring": [
+        {"condition": "growth_rate >= 1.5", "score": 10},
+        {"condition": "growth_rate >= 1.0", "score": 7},
+        {"condition": "growth_rate >= 0.5", "score": 4},
+        {"condition": "growth_rate < 0.5", "score": 1}
+      ]
+    },
+    "fall_risk": {
+      "weight": 1.0,
+      "description": "Tree fall risk toward powerline",
+      "scoring": [
+        {"condition": "fall_reach >= distance_to_line * 1.5", "score": 10},
+        {"condition": "fall_reach >= distance_to_line * 1.2", "score": 7},
+        {"condition": "fall_reach >= distance_to_line * 1.0", "score": 5},
+        {"condition": "fall_reach < distance_to_line * 1.0", "score": 1}
+      ]
+    },
+    "slope_exposure": {
+      "weight": 0.8,
+      "description": "Slope steepness toward powerline (degrees)",
+      "scoring": [
+        {"condition": "slope_deg >= 30", "score": 8},
+        {"condition": "slope_deg >= 20", "score": 5},
+        {"condition": "slope_deg >= 10", "score": 3},
+        {"condition": "slope_deg < 10", "score": 1}
+      ]
+    },
+    "wind_exposure": {
+      "weight": 0.6,
+      "description": "Wind exposure factor (storm frequency)",
+      "scoring": [
+        {"condition": "wind_risk >= 0.8", "score": 6},
+        {"condition": "wind_risk >= 0.5", "score": 4},
+        {"condition": "wind_risk >= 0.2", "score": 2},
+        {"condition": "wind_risk < 0.2", "score": 1}
+      ]
+    }
+  },
+  "corridor_widths": {
+    "1000kv": {"half_width": 75, "unit": "meters"},
+    "500kv": {"half_width": 50, "unit": "meters"},
+    "220kv": {"half_width": 35, "unit": "meters"},
+    "110kv": {"half_width": 25, "unit": "meters"},
+    "35kv": {"half_width": 15, "unit": "meters"},
+    "10kv": {"half_width": 10, "unit": "meters"}
+  },
+  "conductor_heights": {
+    "1000kv": {"default": 25.0, "unit": "meters"},
+    "500kv": {"default": 18.0, "unit": "meters"},
+    "220kv": {"default": 14.0, "unit": "meters"},
+    "110kv": {"default": 11.0, "unit": "meters"},
+    "35kv": {"default": 8.0, "unit": "meters"},
+    "10kv": {"default": 6.0, "unit": "meters"}
+  },
+  "fall_factor": 1.0,
+  "clearance_buffer": 2.0
+}
